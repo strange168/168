@@ -1,0 +1,46 @@
+function onEdit(e) {
+  // 編集イベント情報を取得
+  const sheet = e.source.getActiveSheet(); // 編集されたシート
+  const range = e.range; // 編集された範囲
+  const column = range.getColumn(); // 編集された列番号
+  const row = range.getRow(); // 編集された行番号
+  const targetColumns = [2, 3, 4]; // 監視対象の列番号 (例: B=2, C=3, D=4)
+
+  // 対象シート名（一番左のシート）を指定
+  const spreadSheet = SpreadsheetApp.getActiveSpreadsheet();
+  const targetSheetName = spreadSheet.getSheets()[0].getName();
+
+  // 条件: シート名が一致し、監視対象列に含まれ、かつ2行目以降の場合
+  if (sheet.getName() === targetSheetName && targetColumns.includes(column) && row > 1) {
+    const dateColumn = 5; // 日付を入力する列 (例: E列)
+
+    // 本日の日付を取得して入力
+    const today = new Date();
+    sheet.getRange(row, dateColumn).setValue(today);
+  }
+}
+
+
+function indexmatchtest() {
+  // 現在のシートを指定
+  const ss = SpreadsheetApp.getActiveSheet();
+
+  // 指定したシートのA列の最終行数を取得
+  var LastRowNum = ss.getRange(ss.getMaxRows(), 1).getNextDataCell(SpreadsheetApp.Direction.UP).getRow();
+
+  // セルB2から「行：（最終行数-1）行」と「列：1列」に対して、以下のINDEX・MATCH関数の数式を適用する
+  ss.getRange(2,2,LastRowNum-1,1).setValue("=INDEX('シート2'!B:B,MATCH(A2,'シート2'!A:A))");
+}
+
+
+function filter01() {
+  var ss = SpreadsheetApp.getActiveSheet();
+  var filter = ss.getFilter();
+
+  // もしフィルタ設定されていたら解除
+  if (filter !== null){
+    filter.remove();
+  }
+
+  var rng = ss.getDataRange().createFilter();
+}
